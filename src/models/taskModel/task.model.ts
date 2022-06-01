@@ -21,9 +21,9 @@ const schema = new mongoose.Schema({
     required: true,
   },
   task_title: { type: String, required: true  },
-  task_desc: { type: String },
+  task_desc: { type: String ,required: true },
   task_type: { type: String, required: true },
-  task_date: { type:String  },
+  task_date: { type:String ,required: true },
   task_completed: { type: Boolean, required: true },
 },);
 
