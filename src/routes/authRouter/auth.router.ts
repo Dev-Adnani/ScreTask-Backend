@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AuthController } from "../controller/auth.controller";
+import { AuthController } from "../../controller/authController/auth.controller";
 
 const authRouter = Router()
 
@@ -11,12 +11,5 @@ authRouter.post("/login",  AuthController.login);
 
 // Decode UserData
 authRouter.get("/verify", AuthController.decodeUseData);
-
-authRouter.get("/",(req,res) =>
-{
-    res.send({
-        data:"Auth Check LMAO:) "
-    })
-});
 
 export {authRouter};

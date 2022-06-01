@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import * as EmailValidator from "email-validator";
 import bcrypt from "bcrypt";
-import UserInfo from "../models/user.model";
+import UserInfo from "../../models/userModel/user.model";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
 
 export class AuthController {
 
   //Sign Up Method
   static async signUp(req: Request, res: Response) {
-    let { useremail, userpassword ,username } = req.body;
+    let { useremail, userpassword ,username ,userphoto} = req.body;
     let isValidated = EmailValidator.validate(useremail);
     let adminSecret = req.headers.authorization as string;
     let jwt_secret = process.env.JWT_SECRET as string;
@@ -30,7 +31,7 @@ export class AuthController {
 
           if (!emailCheck) {
             const salt = await bcrypt.genSalt(10);
-
+            
             await bcrypt.hash(
               userpassword,
               salt,
@@ -42,9 +43,13 @@ export class AuthController {
                   });
                 } else {
 
+                  var userxid = uuidv4();
+
                   const newUser = await UserInfo.create({
+                    id:userxid,
                     email: useremail,
                     name: username,
+                    photo: userphoto,
                     password: hashedPassword,
                   });
 
@@ -52,7 +57,8 @@ export class AuthController {
                     {
                       email: useremail,
                       name: username,
-                      password: hashedPassword,
+                      id : userxid,
+                      photo : userphoto,
                     },
                     jwt_secret,
                     {
@@ -107,12 +113,10 @@ export class AuthController {
         });
       } else {
         const emailCheck = await UserInfo.exists({ email: useremail });
-        const pass = await UserInfo.findOne({ email: useremail })
-          .select("password")
-          .lean();
+        const userData = await UserInfo.findOne({ email: useremail }).lean();
 
         if (emailCheck) {
-          if (pass !== null) {
+          if (userData !== null) {
             if (userpassword.length < 6) {
               return res.send({
                 authentication: false,
@@ -121,7 +125,7 @@ export class AuthController {
             } else {
               bcrypt.compare(
                 userpassword,
-                pass["password"] as string,
+                userData["password"] as string,
                 (error: any, isPasswordMatched: any) => {
                   if (error) {
                     return res.send({
@@ -139,7 +143,9 @@ export class AuthController {
                    jwt.sign(
                     {
                       email: useremail,
-                      password: pass["password"] as string,
+                      name: userData["name"] as string,
+                      id : userData["id"] as number,
+                      photo : userData["photo"] as string,
                     },
                     jwt_secret,
                     {

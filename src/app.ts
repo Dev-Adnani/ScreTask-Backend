@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from 'cors';
-import { authRouter } from './routes/auth.router';
+import { authRouter } from './routes/authRouter/auth.router';
+import { taskRouter } from './routes/taskRouter/task.router';
 
 
 dotenv.config();
@@ -18,6 +19,14 @@ let mongodb_url = process.env.MONGODB_URL as string;
 
 
 app.use("/auth",authRouter);
+app.use("/task",taskRouter);
+app.get("/",(req,res) =>
+{
+    res.send({
+        data:"Server Check 🔥"
+    })
+});
+
 
 mongoose.connect(
     mongodb_url,
