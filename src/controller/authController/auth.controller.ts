@@ -144,7 +144,7 @@ export class AuthController {
                     {
                       email: useremail,
                       name: userData["name"] as string,
-                      id : userData["id"] as number,
+                      id : userData["id"] as string,
                       photo : userData["photo"] as string,
                     },
                     jwt_secret,

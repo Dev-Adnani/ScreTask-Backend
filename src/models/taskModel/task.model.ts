@@ -2,7 +2,7 @@ import mongoose, { Document } from "mongoose";
 
 export interface Task extends Document {
   task_id: number;
-  user_id : number;
+  user_id : string;
   task_title: string;
   task_desc: string;
   task_type:string;
@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     required: true,
   },
   user_id: {
-    type:Number,
+    type:String,
     required: true,
   },
   task_title: { type: String, required: true  },
