@@ -7,6 +7,8 @@
 
 **Server :** Node, Express , TypeScript
 
+**Frontend :** [Flutter App](https://github.com/Dev-Adnani/ScreTask-Flutter)
+
 
 ## Environment Variables
 
