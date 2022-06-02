@@ -146,7 +146,6 @@ export class TaskController {
                     upsert: true
                   });
 
-                console.log(tasks);
 
                 if(tasks)
                 {
