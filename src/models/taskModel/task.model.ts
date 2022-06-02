@@ -1,7 +1,8 @@
 import mongoose, { Document } from "mongoose";
 
+//Tasks Schema
 export interface Task extends Document {
-  task_id: number;
+  task_id: string;
   user_id : string;
   task_title: string;
   task_desc: string;
