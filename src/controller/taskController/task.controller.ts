@@ -8,8 +8,9 @@ export class TaskController {
 
         let adminSecret = req.headers.authorization as string;
         if (adminSecret === "test") {
-
-            let { task_id,
+            let taskId = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
+            
+            let {
                 user_id,
                 task_title,
                 task_desc,
@@ -19,11 +20,11 @@ export class TaskController {
             } = req.body;
 
 
-            if (task_id != null && user_id != null && task_title != null &&
+            if (user_id != null && task_title != null &&
                 task_type != null && task_completed != null
                 && task_date != null && task_desc != null) {
 
-                const findId = await TaskInfo.exists({ task_id: task_id });
+                const findId = await TaskInfo.exists({ task_id: taskId });
 
                 if (findId) {
                     return res.send({
@@ -33,7 +34,7 @@ export class TaskController {
                 }
                 else {
                     const tasks = await TaskInfo.create({
-                        task_id: task_id,
+                        task_id: taskId,
                         user_id: user_id,
                         task_title: task_title,
                         task_desc: task_desc,
@@ -137,28 +138,28 @@ export class TaskController {
                 task_type != null && task_completed != null
                 && task_date != null && task_desc != null) {
 
-                const filter = {task_id:task_id}
-                const update = {task_title: task_title,
-                    task_type: task_type, task_completed: task_completed, task_date: task_date, task_desc: task_desc}
+                const filter = { task_id: task_id }
+                const update = {
+                    task_title: task_title,
+                    task_type: task_type, task_completed: task_completed, task_date: task_date, task_desc: task_desc
+                }
 
                 const tasks = await TaskInfo.findOneAndUpdate(filter, update, {
                     new: true,
                     upsert: true
-                  });
+                });
 
 
-                if(tasks)
-                {
+                if (tasks) {
                     return res.send({
                         updated: true,
                         data: "Success"
                     });
                 }
-                else
-                {
+                else {
                     return res.send({
                         updated: false,
-                        data:"Oops Something Gone Wrong"
+                        data: "Oops Something Gone Wrong"
                     });
                 }
             }
