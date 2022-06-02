@@ -9,7 +9,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd Backend-SaltPe
+  cd ScreTask-Backend
 ```
 
 Install dependencies
