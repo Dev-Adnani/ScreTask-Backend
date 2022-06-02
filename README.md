@@ -41,27 +41,3 @@ To run this project, you will need to add the following environment variables to
 ## API Reference
 
 `API KEY : test`
-
-# Authentication
-
-#### Signup
-
-```http
-  POST BASE_URL/signup
-```
-
-| Parameter           | Type     | Description                             |
-| :--------           | :------- | :--------------------------------       |
-| `useremail`         | `string` | **Required**. User's Email              |
-| `userpassword`      | `string` | **Required**. User's Password           |
-
-#### Login
-
-```http
-  POST BASE_URL/login
-```
-
-| Parameter           | Type     | Description                             |
-| :--------           | :------- | :--------------------------------       |
-| `useremail`         | `string` | **Required**. User's Email              |
-| `userpassword`      | `string` | **Required**. User's Password           |
