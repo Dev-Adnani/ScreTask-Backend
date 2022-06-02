@@ -3,7 +3,7 @@
 Clone the project
 
 ```bash
-  git clone https://github.com/Dev-Misc/Backend-SaltPe
+  git clone https://github.com/Dev-Adnani/ScreTask-Backend
 ```
 
 Go to the project directory
