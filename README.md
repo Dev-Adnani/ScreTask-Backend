@@ -1,7 +1,3 @@
-# Backend-SaltPe
-
-#### -> [BASE_URL](https://swaad-anusaar.herokuapp.com)
-
 ## Run Locally
 
 Clone the project
