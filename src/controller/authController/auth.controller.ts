@@ -3,27 +3,31 @@ import * as EmailValidator from "email-validator";
 import bcrypt from "bcrypt";
 import UserInfo from "../../models/userModel/user.model";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 import { v4 as uuidv4 } from 'uuid';
 
 export class AuthController {
 
   //Sign Up Method
   static async signUp(req: Request, res: Response) {
-    let { useremail, userpassword ,username ,userphoto} = req.body;
+    let { useremail, userpassword ,username ,userphoto , secretcode, secretcodeinput} = req.body;
     let isValidated = EmailValidator.validate(useremail);
     let adminSecret = req.headers.authorization as string;
     let jwt_secret = process.env.JWT_SECRET as string;
+    
 
     if (adminSecret === "test") {
       if (!isValidated) {
         return res.send({
           authentication: false,
+          emailVerification:false,
           data: "Email Address Badly Formatted",
         });
       } else {
         if (userpassword.length < 6) {
           return res.send({
             authentication: false,
+            emailVerification:false,
             data: "Password Length Should Be Greather Than 6",
           });
         } else {
@@ -39,11 +43,14 @@ export class AuthController {
                 if (error) {
                   return res.send({
                     authentication: false,
+                    emailVerification:false,
                     data: error,
                   });
                 } else {
 
-                  var userxid = uuidv4();
+                  if(secretcode === secretcodeinput)
+                  {
+                    var userxid = uuidv4();
 
                   const newUser = await UserInfo.create({
                     id:userxid,
@@ -68,16 +75,27 @@ export class AuthController {
                       if (error) {
                         return res.send({
                           authentication: false,
+                          emailVerification:true,
                           data: error,
                         });
                       } else {
                         return res.send({
                           authentication: true,
+                          emailVerification:true,
                           data: data,
                         });
                       }
                     }
                   );
+                  }
+                  else
+                  {
+                    return res.send({
+                      authentication: false,
+                      emailVerification:false,
+                      data: [],
+                    });
+                  }
 
                 }
               }
@@ -85,6 +103,7 @@ export class AuthController {
           } else {
             return res.send({
               authentication: false,
+              emailVerification:false,
               data: "Email Already Exists",
             });
           }
@@ -93,6 +112,7 @@ export class AuthController {
     } else {
       return res.send({
         authentication: false,
+        emailVerification:false,
         data: "Wrong API Key",
       });
     }
@@ -173,7 +193,7 @@ export class AuthController {
         } else {
           return res.send({
             authentication: false,
-            data: "Email Doesn't Already Exists",
+            data: "No Account Found",
           });
         }
       }
@@ -205,5 +225,93 @@ export class AuthController {
     });
   }
 
+  
+  static async sendEmailVerification(req: Request, res: Response) {
+    let {useremail} = req.body;
+    var secretkeyword = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
+
+    let adminname = process.env.CUSTOM_EMAIL as string;
+    let adminpassword = process.env.CUSTOM_PASS as string;
+
+    let transporter = nodemailer.createTransport({
+      host: "in-v3.mailjet.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: adminname,
+        pass: adminpassword,
+      },
+    });
+
+    const mailOptions = {
+      from: "no-reply@devadnani.com",
+      to: useremail,
+      html: `${secretkeyword} is your Security Code from creating a new account. Copy and paste ${secretkeyword} in the signup field.`,
+      subject: "Scre-Task Account Verification",
+      text: `${secretkeyword} is your Security Code from creating a new account. Copy and paste ${secretkeyword} in the signup field.`,
+    };
+
+    let isValidated = EmailValidator.validate(useremail);
+
+    if (!isValidated) {
+      return res.send({
+        data: "Enter valid email",
+        secretcode: null,
+        received: false,
+      });
+    }
+    else
+    {
+      const emailCheck = await UserInfo.exists(
+        {
+          useremail: useremail,
+        },
+        async (error: any, emailExists: any) => {
+          if (error) {
+            return res.send({
+              data: error,
+              secretcode: null,
+              received: false,
+            });
+          }
+          if (emailExists) {
+            return res.send({
+              data: "Email already exists",
+              secretcode: null,
+              received: false,
+            });
+          } else {
+            transporter.sendMail(mailOptions, (error: any, data: any) => {
+              if (error) {
+                console.log(error);
+                return res.send({
+                  data: "Something went wrong",
+                  secretcode: null,
+                  received: false,
+                });
+              } else {
+                let accepted = data.accepted;
+                if (accepted.length != 0) {
+                  return res.send({
+                    data: useremail,
+                    secretcode: secretkeyword,
+                    received: true,
+                  });
+                }
+                if (accepted.length == 0) {
+                  return res.send({
+                    data: useremail,
+                    secretcode: null,
+                    received: false,
+                  });
+                }
+              }
+            });
+          }
+        }
+      );
+    }
+  }
+  
 
 }
