@@ -262,54 +262,46 @@ export class AuthController {
     }
     else
     {
-      const emailCheck = await UserInfo.exists(
-        {
-          useremail: useremail,
-        },
-        async (error: any, emailExists: any) => {
+      const emailCheck = await UserInfo.exists({ email: useremail });
+      console.log(emailCheck);
+      
+      if(emailCheck)
+      {
+        return res.send({
+          data: "Email already exists",
+          secretcode: null,
+          received: false,
+        });
+      }
+      else
+      {
+        transporter.sendMail(mailOptions, (error: any, data: any) => {
           if (error) {
+            console.log(error);
             return res.send({
-              data: error,
-              secretcode: null,
-              received: false,
-            });
-          }
-          if (emailExists) {
-            return res.send({
-              data: "Email already exists",
+              data: "Something went wrong",
               secretcode: null,
               received: false,
             });
           } else {
-            transporter.sendMail(mailOptions, (error: any, data: any) => {
-              if (error) {
-                console.log(error);
-                return res.send({
-                  data: "Something went wrong",
-                  secretcode: null,
-                  received: false,
-                });
-              } else {
-                let accepted = data.accepted;
-                if (accepted.length != 0) {
-                  return res.send({
-                    data: useremail,
-                    secretcode: secretkeyword,
-                    received: true,
-                  });
-                }
-                if (accepted.length == 0) {
-                  return res.send({
-                    data: useremail,
-                    secretcode: null,
-                    received: false,
-                  });
-                }
-              }
-            });
+            let accepted = data.accepted;
+            if (accepted.length != 0) {
+              return res.send({
+                data: useremail,
+                secretcode: secretkeyword,
+                received: true,
+              });
+            }
+            if (accepted.length == 0) {
+              return res.send({
+                data: useremail,
+                secretcode: null,
+                received: false,
+              });
+            }
           }
-        }
-      );
+        });
+      }
     }
   }
   
