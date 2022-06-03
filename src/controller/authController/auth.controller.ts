@@ -93,7 +93,7 @@ export class AuthController {
                     return res.send({
                       authentication: false,
                       emailVerification:false,
-                      data: [],
+                      data: "Oops Wrong Code",
                     });
                   }
 
