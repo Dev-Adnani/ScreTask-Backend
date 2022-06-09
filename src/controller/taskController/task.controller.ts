@@ -109,7 +109,7 @@ export class TaskController {
 
             const tasks = await TaskInfo.find({ user_id: userId, task_type: type }).lean();
 
-            if(tasks)
+            if(tasks.length > 0)
             {
                 return res.send({
                     received: true,
@@ -125,6 +125,7 @@ export class TaskController {
                     data: null
                 });
             }
+            
         }
         else {
             return res.send({
