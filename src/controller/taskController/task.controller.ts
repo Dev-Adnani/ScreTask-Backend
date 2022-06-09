@@ -122,7 +122,7 @@ export class TaskController {
                 return res.send({
                     received: true,
                     available: false,
-                    data: null
+                    data: tasks
                 });
             }
             
