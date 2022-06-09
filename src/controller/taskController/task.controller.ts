@@ -109,11 +109,22 @@ export class TaskController {
 
             const tasks = await TaskInfo.find({ user_id: userId, task_type: type }).lean();
 
-            return res.send({
-                received: true,
-                available: true,
-                data: tasks
-            });
+            if(tasks)
+            {
+                return res.send({
+                    received: true,
+                    available: true,
+                    data: tasks
+                });
+            }
+            else
+            {
+                return res.send({
+                    received: true,
+                    available: false,
+                    data: null
+                });
+            }
         }
         else {
             return res.send({
