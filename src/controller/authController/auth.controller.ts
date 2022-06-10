@@ -69,7 +69,7 @@ export class AuthController {
                     },
                     jwt_secret,
                     {
-                      expiresIn: "2h",
+                      expiresIn: "14d",
                     },
                     async (error: any, data: any) => {
                       if (error) {
@@ -169,7 +169,7 @@ export class AuthController {
                     },
                     jwt_secret,
                     {
-                      expiresIn: "2h",
+                      expiresIn: "14d",
                     },
                     async (error: any, data: any) => {
                       if (error) {
