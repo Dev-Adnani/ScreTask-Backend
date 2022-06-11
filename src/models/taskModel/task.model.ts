@@ -13,7 +13,7 @@ export interface Task extends Document {
 
 const schema = new mongoose.Schema({
     task_id: {
-    type:Number,
+    type:String,
     unique: true,
     required: true,
   },
