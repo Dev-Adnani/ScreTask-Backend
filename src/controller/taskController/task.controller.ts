@@ -117,24 +117,14 @@ export class TaskController {
                 }
             }
           
-            if(tasks.length === 0)
-            {
-                return res.send({
-                    received: true,
-                    available: false,
-                    total_count: 0,
-                    completed_count: 0,
-                });
-            }
-            else
-            {
+            
                 return res.send({
                     received: true,
                     available: true,
                     total_count:tasks.length,
                     completed_count: completed_count,
                 });
-            }
+            
         }
         else {
             return res.send({
