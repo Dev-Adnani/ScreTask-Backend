@@ -9,8 +9,8 @@ export class TaskController {
         let adminSecret = req.headers.authorization as string;
         if (adminSecret === "test") {
             let taskId = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
-            
-            
+
+
             let {
                 user_id,
                 task_title,
@@ -100,6 +100,52 @@ export class TaskController {
         }
 
     }
+    //Get Total Task Completed Count
+
+    static async getCompletedCount(req: Request, res: Response) {
+        let adminSecret = req.headers.authorization as string;
+        var completed_count = 0;
+
+        if (adminSecret === "test") {
+            let { userId } = req.params;
+
+            const tasks = await TaskInfo.find({ user_id: userId }).lean();
+            for (const key in tasks) {
+                if(tasks[key]["task_completed"] == true)
+                {
+                    completed_count = completed_count + 1;
+                }
+            }
+          
+            if(tasks.length === 0)
+            {
+                return res.send({
+                    received: true,
+                    available: false,
+                    total_count: 0,
+                    completed_count: 0,
+                });
+            }
+            else
+            {
+                return res.send({
+                    received: true,
+                    available: true,
+                    total_count:tasks.length,
+                    completed_count: completed_count,
+                });
+            }
+        }
+        else {
+            return res.send({
+                received: false,
+                available: false,
+                data: null,
+            });
+        }
+
+    }
+
 
     // Get Task Type
     static async getTaskType(req: Request, res: Response) {
@@ -109,23 +155,21 @@ export class TaskController {
 
             const tasks = await TaskInfo.find({ user_id: userId, task_type: type }).lean();
 
-            if(tasks.length > 0)
-            {
+            if (tasks.length > 0) {
                 return res.send({
                     received: true,
                     available: true,
                     data: tasks
                 });
             }
-            else
-            {
+            else {
                 return res.send({
                     received: true,
                     available: false,
                     data: tasks
                 });
             }
-            
+
         }
         else {
             return res.send({

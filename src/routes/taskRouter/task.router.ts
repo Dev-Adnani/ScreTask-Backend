@@ -9,6 +9,9 @@ taskRouter.post("/add",  TaskController.addTask);
 //Get Tasks By UserID Route
 taskRouter.get("/:userId", TaskController.getTask);
 
+//Get Total Task Completed Count
+taskRouter.get("/count/:userId", TaskController.getCompletedCount);
+
 //Get Specific Task Route
 taskRouter.get("/detail/:taskId", TaskController.getSpecificTask);
 
