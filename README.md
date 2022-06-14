@@ -136,6 +136,16 @@ Start the server
 | :-------- | :------- | :------------------------- |
 | `userId` | `Parameter` | **Required**. User's ID |
 
+#### Get Completed Task Count
+
+```http
+  GET task/count/:userId
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `userId` | `Parameter` | **Required**. User's ID |
+
 #### Get Detail Task [Particular Task]
 
 ```http
